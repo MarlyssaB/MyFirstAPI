@@ -53,14 +53,29 @@ namespace MyFirstApi.Controllers
 
         // PUT api/people/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Person newPerson)
+        public IActionResult Put(int id, [FromBody] Person updatedPerson)
         {
+            var person = _people.FirstOrDefault(p => p.Id == id);
+            if (person == null) return BadRequest();
+            person.Name = updatedPerson.Name;
+            person.HairColor = updatedPerson.HairColor;
+            return Ok(_people);
         }
 
         // DELETE api/people/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var person = _people.FirstOrDefault(p => p.Id == id);
+            if (person != null)
+            {
+                _people.Remove(person);
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
